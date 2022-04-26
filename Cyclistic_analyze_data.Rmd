@@ -1,0 +1,290 @@
+---
+title: "Cyclistic_analyeze_data"
+author: "Trang Nguyen"
+date: '2022-04-26'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading packages for analysis
+I will be using ggplot2 for data visualization and analysis
+
+```{r loading packages}
+library(tidyverse)
+library(ggplot2)
+```
+
+## Load the dataset
+
+```{r}
+cyclistic <- read_csv("cyclistic_clean.csv")
+```
+
+
+## Casuals vs Members Distribution
+
+```{r casuals vs members distribution}
+cyclistic %>% 
+  group_by(member_casual) %>% 
+  summarise(count = length(ride_id), 
+            '%' = (length(ride_id) / nrow(cyclistic)) * 100 )
+```
+## Plot 1: Casuals x Members Distribution  
+This visualization shows Casuals vs Members distribution which Casuals are ~45% and Members are ~55%. Casuals percentage is 10% lesser than the count of Members. 
+
+```{r plot 1}
+ggplot(cyclistic, aes(member_casual, fill = member_casual)) + geom_bar() + 
+  labs(x = "Casuals x Members", title = "Plot 1: Casuals x Members Distribution") +
+  scale_fill_brewer(palette = "Set2")
+```
+## Month Distribution
+I will remove the 2021 - 03 ( Mar ) since this infomation is not valid/complete.
+
+```{r month distribution}
+cyclistic %>% 
+  group_by(year_month) %>% 
+  summarise(count = length(ride_id),
+            '%' = length(ride_id) / nrow(cyclistic) * 100,
+            'member_percent' = (sum(member_casual == "member") / length(ride_id)) *100,
+            'casual_percent' = (sum(member_casual == "casual") / length(ride_id))* 100,
+            'Member x Casual Perc Difer' = member_percent - casual_percent) 
+```
+
+## Remove incomlete/valid data
+Removed "2021 - 03 ( Mar )" using the SUBSET fucntion since this information 
+is not complete and/or invalid for analysis
+
+```{r remove incomplete data}
+cyclistic_new <- cyclistic %>% 
+  subset(year_month != "2021 - 03 ( Mar )",)
+```
+
+## Plot 2.1: Month Distribution
+This visualization shows how Casual vs Member distribute throughout the month
+in the previous 12 months. Some key points taken from this plot:
+1. The months with the biggest volume of rides are July and August.
+2. The months with the least volume of rides are January and February . 
+3. In all months, we tend to have more members' rides than casual rides. 
+4. Our volume of rides is high during the summer months (casuals' volume of
+rides also high during these few months) 
+5. Let's compare this data with the climate data of Seattle to see whether we 
+can identify any relationship. 
+
+```{r plot 2.1}
+cyclistic_new %>% 
+  ggplot(aes(year_month, fill = member_casual)) + geom_bar () + 
+  labs(x = "Month", title="Plot 2.1: Month Distribution") + coord_flip() + 
+  scale_fill_brewer(palette = "Set2")
+```
+
+## Climate data in Seattle 
+I will compare the above data with the climate data from Seattle to see if I can 
+draw further details from the Casual vs Member Month Distribution.
+The data is from <https://en.wikipedia.org/wiki/Climate_of_Seattle> 
+
+```{r seattle_temp}
+seattle_mean_temp <- c(6.0, 6.7, 8.4, 10.7, 14.2, 16.7, 19.5, 19.7, 17.0, 12.1, 8.1, 5.6)
+month <- c("01 - Jan","02 - Feb","03 - Mar","04 - Apr","05 - May","06 - Jun","07 - Jul","08 - Aug","09 - Sep","10 - Oct","11 - Nov","12 - Dec")
+```
+
+## Plot 2.2: Seattle Temperature
+Based on the Seattle climate data, there's a significant relationship between the temperature and the volume of rides throughout the year. 
+
+
+```{r plot 2.2}
+data.frame(month, seattle_mean_temp) %>% 
+  ggplot(aes(x = month, y = seattle_mean_temp, fill = month)) +
+  labs(x= "Month", y = "Mean temperature", title = "Plot 2.2: Mean Temperature for Seattle (1991-2020)") + geom_col() 
+```
+
+## Weekday Distribution
+
+```{r weekday distribution}
+cyclistic_new %>% 
+  group_by(weekday) %>% 
+  summarise(count = length(ride_id),
+            '%' = (length(ride_id) / nrow(cyclistic_new)) * 100,
+            'members_percent' = (sum(member_casual == "member") /
+                                   length(ride_id)) *100,
+            'casual_percent' = (sum(member_casual == "casual") / 
+                                  length(ride_id)) * 100,
+            'Member x Casual Perc Difer' = members_percent - casual_percent)
+```
+
+## Plot 3: Weekday Distribution
+Based on the data, there's a few key points:
+1. The biggest volume of rides during the week is on the weekend with Saturday's 
+volume is the biggest. 
+2. The least volume of rides during the week is on Monday.
+3. Members tend to have bigger volume of rides throughout the week, except on Saturday.
+4. Casual's volume is the largest on Saturday which is ~56% compared to member which is only ~43%. 
+5. Casual's volume increases during weekends, starting on friday with a ~7% increase. 
+
+```{r plot 3}
+ggplot(cyclistic_new, aes(weekday, fill = member_casual)) + geom_bar() + 
+labs(x = "Weekday", title = "Plot 3: Weekday Distribution") + coord_flip() +
+  scale_fill_brewer(palette = "Set2")
+```
+
+## Hour of the day
+
+```{r hour of the day}
+cyclistic_new %>% 
+  group_by(start_hour) %>% 
+  summarise(count = length(ride_id),
+            '%' = (length(ride_id) / nrow(cyclistic_new)) * 100,
+            'member_percent' = (sum(member_casual == "member") / length(ride_id)) * 100,
+            'casual_percent' = (sum(member_casual == "casual") / length(ride_id)) * 100,
+            'member_casual_perc_difer' = member_percent - casual_percent)
+            
+```
+## Plot 4: Hour of the day distribution
+From this data, there's a few key points worth noting:
+1. The highest volume of rides is at 12pm afternoon. 
+2. We have a bigger volume of rides during the afternoon. 
+3. We have more members during the morning mainly starting at 5am-11am.
+4. And we have casuals starting at 4pm-10pm.
+
+```{r plot 4}
+cyclistic_new %>% 
+  ggplot(aes(start_hour, fill = member_casual)) + labs(x = "Hour of the day", title = "Plot 4: Hour of the day distribution") + geom_bar() + scale_fill_brewer(palette = "Set2")
+```
+
+## Plot 5: Hour of the day by weekday distribution
+I will compare hour of the day throughout weekday using facet_wrap to see if there's 
+any key points here:
+1. We can tell that Mon, Tue, Wed, Thur, Fri data looks quite similar to each other.
+2. And Sat and Sun data also look similar to each other.
+3. There's an obvious difference between midweek data and weekend data. So let's
+compare the midweek and weekend data together. 
+
+```{r plot 5}
+cyclistic_new %>% 
+  ggplot(aes(start_hour, fill = member_casual)) + labs(x = "Hour of the day", title = "Plot 5: Hour of the day distribution divided by weekday") + geom_bar() + facet_wrap(~weekday) + scale_fill_brewer(palette = "Set2")
+```
+
+## Plot 6: Midweek and weekend distribution (need revision for description)
+Since there's a clear difference between midweek and weekend. I decided to create 
+another plot to better view the difference:
+(the count of data points does not give as much meaning knowing each plot represents 
+a different amount of days)
+1. Flow- the weekend has a much smoother flow while the midweek has a steeper flow
+of volume.
+2. Midweek- there's an increase starting at 5am-12pm; then the data starts to decrease
+starting at 1pm. Overall, there's more members than casuals throughout the day. 
+3. Weekend- we have a much larger flow of casuals than members during the afternoon 
+and evening. 
+
+```{r plot 6}
+cyclistic_new %>% 
+  mutate(type_of_weekday = ifelse(weekday == '6 - Sat' | weekday == '7 - Sun',
+                                  'weekend',
+                                  'midweek')) %>% 
+  ggplot(aes(start_hour, fill = member_casual))+ scale_fill_brewer(palette = "Set2") + labs(x = "Hour of the day", title = "Plot 6: Midweek and weekend distribution") + geom_bar() + facet_wrap(~type_of_weekday)
+```
+
+## Types of bike distribution
+Let's compare to see which types of bikes have more preferences. 
+
+```{r types of bike distribution}
+cyclistic_new %>% 
+  group_by(rideable_type) %>% 
+  summarise(count = length(ride_id),
+            '%' = (length(ride_id) / nrow(cyclistic_new)) * 100,
+            'member_percent' = (sum(member_casual == "member") / length(ride_id)) * 100,
+            'casual_percent' = (sum(member_casual == "casual") / length(ride_id)) * 100,
+            'member_casual_perc_difer' = member_percent - casual_percent)
+```
+
+## Plot 7: Types of bike distribution
+Based on the data, it's important to note a few key points here:
+1. Both members and casuals tend to prefer classical and electric bikes more. However, this might be because we have more classical and electric bikes more. 
+2. This data needs more information for better conclusion. 
+
+```{r plot 7}
+cyclistic_new %>% 
+  ggplot(aes(rideable_type, fill = member_casual)) + labs(x= "Rideable type", title = 
+                                                            "Plot 7: Type of bike distribution") + geom_bar() + coord_flip() + scale_fill_brewer(palette = "Set2")
+```
+
+## ride_time_m 
+There a few problems that need to be addressed here:
+1. The min is negative. How come the duration of the trip becomes negative? It
+could be because of the stations' malfunction which return errors/ bad dates.
+2. The max value also does not make sense. The mean here is 21.54 when the max is 
+55944.15. 
+3. Checking the start and end station doesn't appear to have a problem.
+
+```{r ride_time_m}
+summary(cyclistic_new$ride_time_m)
+```
+
+With the data below, we can see a few things here:
+1. The difference between 0% and 100% is 56002 minutes.
+2. The difference between 5% and 95% is ~52 minutes. 
+3. Because of that, in the analysis of this variable we are going to use a subset of the dataset without outliners. The subset will contain 95% of the dataset.
+
+```{r}
+ventiles = quantile(cyclistic_new$ride_time_m, seq(0, 1, by=0.05))
+ventiles
+```
+
+## Removed outliners
+
+```{r removed outliners}
+cyclistic_without_outliners <- cyclistic_new %>% 
+  filter(ride_time_m > as.numeric(ventiles['5%'])) %>% 
+  filter(ride_time_m < as.numeric(ventiles['95%']))
+print(paste("Removed", nrow(cyclistic_new) - nrow(cyclistic_without_outliners), "rows as outliners"))
+```
+
+## Riding time for casual vs member distribution
+
+```{r ride_time_m multivariable}
+cyclistic_without_outliners %>% 
+  group_by(member_casual) %>% 
+  summarise(mean = mean(ride_time_m),
+            'first_quarter' = as.numeric(quantile(ride_time_m, .25)),
+            'median' = median(ride_time_m),
+            'third_quarter' = as.numeric(quantile(ride_time_m, .75)),
+            'IR' = third_quarter - first_quarter)
+```
+
+## Plot 8: Riding time for Casual x Member distribution
+Based on the graph, we can see that casuals have more riding time than members, 
+mean and IQR (InterQuartile Range) are aslo bigger for casuals. 
+
+```{r plot 8}
+cyclistic_without_outliners %>% 
+  ggplot(aes(x= member_casual, y=ride_time_m, fill=member_casual)) + geom_boxplot() + labs(x="Member x Casual", y = "Riding time", title = "Plot 8: Riding time for Casual x Member distribution") + scale_fill_brewer(palette = "Set2")
+```
+
+## Plot 9: Riding time for day of the week distribution
+Casuals- Riding times follow a more curve distribution, peaking on sundays and 
+valleying on wednesday/thursday.
+Members- Riding times keep unchanged starting from Monday to Thursday, we can see
+the data starts to change starting from Friday.
+
+```{r plot 9}
+cyclistic_without_outliners %>% 
+  ggplot(aes(x=weekday, y=ride_time_m, fill = member_casual)) + facet_wrap(~member_casual) +
+geom_boxplot() + labs(x="Weekday", y="Riding time", title = "Plot 9: Riding time for the day of the week distribution") + coord_flip() + scale_fill_brewer(palette = "Set2")
+```
+
+
+## Plot 10: Riding time for rideable type distribution
+I will not include this plot into the analysis since the information is not valid. 
+
+```{r plot 10}
+cyclistic_without_outliners %>% 
+  ggplot(aes(x=rideable_type, y= ride_time_m, fill = member_casual)) +
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Set2") +
+  facet_wrap(~member_casual) + labs(x= "Rideable type", y="Riding type",
+                                    title = "Riding time for rideable type distribution")
+```
+
+
+

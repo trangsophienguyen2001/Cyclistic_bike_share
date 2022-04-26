@@ -1,0 +1,109 @@
+---
+title: "Cyclistic_Clean_Data"
+author: "Trang Nguyen"
+date: '2022-04-26'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+```{r loading packages}
+library(tidyverse)
+library(dplyr)
+library(readr)
+library(janitor)
+```
+
+## Concatenating 
+All the csvs file will be concatenated into one dataframe
+```{r concatenating all csvs file into one dataframe}
+csv_files <- list.files(path = "/Users/trangnguyen/Desktop/Cyclistics", 
+                        recursive = TRUE, full.names=TRUE)
+cyclistic_merged <- do.call(rbind, lapply(csv_files, read.csv))
+head(cyclistic_merged)
+```
+
+## Remove duplicates
+```{r}
+cyclistic_no_dups <- cyclistic_merged[!duplicated(cyclistic_merged$ride_id),]
+print(paste("Removed", nrow(cyclistic_merged)-nrow(cyclistic_no_dups), 
+            "duplicated rows"))
+```
+
+## Parsing datetime columns
+```{r}
+cyclistic_no_dups$started_at <- as.POSIXct(cyclistic_no_dups$started_at, 
+                                           "%Y-%m-%d %H:%M:%S")
+cyclistic_no_dups$ended_at <- as.POSIXct(cyclistic_no_dups$ended_at, 
+                                         "%Y-%m-%d %H:%M:%S")
+```
+
+## Manipulating the data
+Adding new columns to help improve calculation time 
+
+## ride_time_m 
+Represents the total time of a bike ride, in minutes
+
+```{r}
+cyclistic_no_dups <- cyclistic_no_dups %>% 
+  mutate(ride_time_m = as.numeric(cyclistic_no_dups$ended_at 
+                                  - cyclistic_no_dups$started_at) / 60)
+summary(cyclistic_no_dups$ride_time_m)
+```
+
+## year_month 
+Separate the year and the month into one column
+
+```{r}
+cyclistic_no_dups <- cyclistic_no_dups %>% 
+  mutate(year_month = paste(strftime(cyclistic_no_dups$started_at, "%Y"),
+                            "-",
+                            strftime(cyclistic_no_dups$started_at, "%m"),
+                            paste("(",strftime(cyclistic_no_dups$started_at, 
+                                               "%b"), ")", sep=" ")))
+unique(cyclistic_no_dups$year_month)
+```
+
+## weekday
+Determine patterns of travels in the week
+
+```{r}
+cyclistic_no_dups <- cyclistic_no_dups %>%
+  mutate(weekday = paste(strftime(cyclistic_no_dups$ended_at, "%u"), "-",
+                          strftime(cyclistic_no_dups$ended_at, "%a")))
+unique(cyclistic_no_dups$weekday)
+```
+
+## start_hour
+Getting the hour of the day also may be useful for intra day analysis
+
+```{r}
+cyclistic_no_dups <- cyclistic_no_dups %>% 
+  mutate(start_hour = strftime(cyclistic_no_dups$ended_at, "%H"))
+unique(cyclistic_no_dups$start_hour)
+
+```
+
+## Saving the result as a CSV
+```{r}
+cyclistic_no_dups %>% 
+  write.csv("cyclistic_clean.csv")
+```
+
+## Resize the plot for analysis
+```{r}
+fig <- function(width,height){options(repr.plot.width, repr.plot.height = height)}
+```
+```{r}
+cyclistic <- cyclistic_no_dups
+head(cyclistic)
+```
+
+## Summary of the dataset
+```{r}
+summary(cyclistic)
+```
+
