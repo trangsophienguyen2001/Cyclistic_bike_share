@@ -166,7 +166,7 @@ cyclistic_new %>%
   ggplot(aes(start_hour, fill = member_casual)) + labs(x = "Hour of the day", title = "Plot 5: Hour of the day distribution divided by weekday") + geom_bar() + facet_wrap(~weekday) + scale_fill_brewer(palette = "Set2")
 ```
 
-## Plot 6: Midweek and weekend distribution (need revision for description)
+## Plot 6: Midweek and weekend distribution
 Since there's a clear difference between midweek and weekend. I decided to create 
 another plot to better view the difference:
 (the count of data points does not give as much meaning knowing each plot represents 
