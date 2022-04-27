@@ -10,7 +10,7 @@ visualizations.
 
 ## Ask/Business Task
 
-## Questions: How do annual members and casual riders use Cyclistic bikes differently?
+#### Questions: How do annual members and casual riders use Cyclistic bikes differently?
 
 ### Business Task: To identify and understand the bike usage among annual members and casual riders in order to suggest marketing strategies to convert casual riders into annual members. 
 
