@@ -29,4 +29,12 @@ Some key columns are worth noting are:
 •	Station latitude and longitude columns (for data visualization)
 
 ## Process
+This step will prepare the data for analysis. 
 [Clean data](https://github.com/trangsophienguyen2001/Cyclistic_bike_share/blob/main/Cyclistic_clean_data.Rmd)
+
+## Analyze
+This step will explore the distribution of casual riders & annual members and how these two groups differ from each other.
+[Analyze data](https://github.com/trangsophienguyen2001/Cyclistic_bike_share/blob/main/Cyclistic_analyze_data.Rmd)
+
+## Share
+
