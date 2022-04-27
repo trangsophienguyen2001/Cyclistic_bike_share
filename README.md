@@ -37,4 +37,4 @@ This step will explore the distribution of casual riders & annual members and ho
 [Analyze data](https://github.com/trangsophienguyen2001/Cyclistic_bike_share/blob/main/Cyclistic_analyze_data.Rmd)
 
 ## Share
-With the insights gained from the previous steps, let's go through the main key points [here](https://docs.google.com/presentation/d/17uHnHp62iInvIAhA8uz1Fl5SdO9jCgghqKUQjrMqrIU/edit?usp=sharing).
+With the insights gained from the previous steps, let's go through the main key points [here]().
