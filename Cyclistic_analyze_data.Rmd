@@ -1,5 +1,5 @@
 ---
-title: "Cyclistic_analyeze_data"
+title: "Cyclistic_analyze_data"
 author: "Trang Nguyen"
 date: '2022-04-26'
 output: html_document
