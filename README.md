@@ -30,7 +30,7 @@ Some key columns are worth noting are:
 
 ## Process
 This step will prepare the data for analysis. I will be using RStudio for this project. 
-Key tasks;
+Key tasks:
 Download data and store it appropriately.
 Identify how it’s organized.
 Sort and filter the data.
@@ -47,7 +47,7 @@ Identify trends and relationships.
 [Analyze data](https://github.com/trangsophienguyen2001/Cyclistic_bike_share/blob/main/Cyclistic_analyze_data.Rmd)
 
 ## Share
-With the insights gained from the previous steps, let's go through the main key points [here](https://github.com/trangsophienguyen2001/Cyclistic_bike_share/blob/main/Cyclistic%20Presentation.pdf).
+With the insights gained from the previous steps, I have created a presentation with all the main points, let's go through them together [here](https://github.com/trangsophienguyen2001/Cyclistic_bike_share/blob/main/Cyclistic%20Presentation.pdf).
 
 ## Act 
 Partner with influencers to create a marketing campaign focusing on healthy lifestyles and promoting an eco-friendly approach to protecting the environment by reducing car emissions. The ads can be shown on social networks such as TikTok, Instagram posts, or reels.
