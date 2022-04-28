@@ -29,12 +29,27 @@ Some key columns are worth noting are:
 •	Station latitude and longitude columns (for data visualization)
 
 ## Process
-This step will prepare the data for analysis. 
+This step will prepare the data for analysis. I will be using RStudio for this project. 
+Key tasks;
+Download data and store it appropriately.
+Identify how it’s organized.
+Sort and filter the data.
+Determine the credibility of the data.
 [Clean data](https://github.com/trangsophienguyen2001/Cyclistic_bike_share/blob/main/Cyclistic_clean_data.Rmd)
 
 ## Analyze
 This step will explore the distribution of casual riders & annual members and how these two groups differ from each other.
+Key tasks: 
+Aggregate your data so it’s useful and accessible.
+Organize and format your data.
+Perform calculations.
+Identify trends and relationships.
 [Analyze data](https://github.com/trangsophienguyen2001/Cyclistic_bike_share/blob/main/Cyclistic_analyze_data.Rmd)
 
 ## Share
-With the insights gained from the previous steps, let's go through the main key points [here]().
+With the insights gained from the previous steps, let's go through the main key points [here](https://github.com/trangsophienguyen2001/Cyclistic_bike_share/blob/main/Cyclistic%20Presentation.pdf).
+
+## Act 
+Partner with influencers to create a marketing campaign focusing on healthy lifestyles and promoting an eco-friendly approach to protecting the environment by reducing car emissions. The ads can be shown on social networks such as TikTok, Instagram posts, or reels.
+Offer discounts and special programs during the cold months.
+Create an ad promoting how practical and beneficial riding the bikes can be, focusing on casual riders during the weekends.
